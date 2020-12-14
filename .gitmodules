@@ -1,0 +1,3 @@
+[submodule "extern/avr-boy-core"]
+	path = extern/avr-boy-core
+	url = https://github.com/Dante999/avr-boy-core.git
