@@ -1,15 +1,17 @@
-cmake_minimum_required(VERSION 3.10)
+project(${PROJECT_NAME}_tests)
 
 add_executable(
         ${PROJECT_NAME}
-        main.cpp #
-        graphx_loop.cpp
+        fifo_pipe_test.cpp
 )
+
+target_include_directories(${PROJECT_NAME} PUBLIC ../include)
 
 target_link_libraries(
         ${PROJECT_NAME}
         PRIVATE project_options #
                 project_warnings #
+                CONAN_PKG::gtest #
                 avr_boy_core #
-                CONAN_PKG::imgui-sfml #
+                avr_boy_emulator_lib
 )
