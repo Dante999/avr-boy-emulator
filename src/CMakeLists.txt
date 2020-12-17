@@ -2,7 +2,8 @@ project(${PROJECT_NAME}_lib)
 
 add_library(
         ${PROJECT_NAME} #
-        fifo_pipe.cpp
+        fifo_pipe.cpp #
+        communicator_pipe.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ../include)

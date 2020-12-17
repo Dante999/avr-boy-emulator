@@ -10,16 +10,16 @@ static uint8_t        actual   = 0;
 
 void thread_read_byte()
 {
-	fifo_pipe_c fifo_reader(path, fifo_pipe_c::mode_e::READ);
-	fifo_reader.open_pipe();
+	fifo_pipe_c fifo_reader(path);
+	fifo_reader.open_pipe(fifo_pipe_c::mode_e::READ);
 	fifo_reader.read_bytes(&actual, 1);
 	fifo_reader.close_pipe();
 }
 
 void thread_write_byte()
 {
-	fifo_pipe_c fifo_writer(path, fifo_pipe_c::mode_e::WRITE);
-	fifo_writer.open_pipe();
+	fifo_pipe_c fifo_writer(path);
+	fifo_writer.open_pipe(fifo_pipe_c::mode_e::WRITE);
 	fifo_writer.write_bytes(&expected, 1);
 	fifo_writer.close_pipe();
 }

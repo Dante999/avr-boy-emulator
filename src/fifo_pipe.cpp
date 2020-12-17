@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <unistd.h> // fifo write() read()
 
-int fifo_pipe_c::open_pipe()
+int fifo_pipe_c::open_pipe(mode_e rw_mode)
 {
 	umask(0);
 
@@ -22,7 +22,7 @@ int fifo_pipe_c::open_pipe()
 		}
 	}
 
-	const int mode = (m_mode == mode_e::READ ? O_RDONLY : O_WRONLY);
+	const int mode = (rw_mode == mode_e::READ ? O_RDONLY : O_WRONLY);
 
 	/* FIFO zum Lesen und Schreiben öffnen */
 	if ((m_fhandle = open(m_filepath.c_str(), mode)) == -1) {

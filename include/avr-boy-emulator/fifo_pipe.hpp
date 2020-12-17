@@ -10,16 +10,13 @@ public:
 
 private:
 	const std::string m_filepath;
-	const mode_e      m_mode;
-
-	int m_fhandle;
+	int               m_fhandle;
 
 public:
-	fifo_pipe_c(const std::string &path, mode_e mode)
-	    : m_filepath(path), m_mode(mode){};
+	fifo_pipe_c(const std::string &path) : m_filepath(path){};
 
-	int  open_pipe();
-	int  close_pipe();
+	int open_pipe(mode_e mode);
+	int close_pipe();
 	void write_bytes(const uint8_t *data, size_t length);
 	void read_bytes(uint8_t *data, size_t length);
 };
