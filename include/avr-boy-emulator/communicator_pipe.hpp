@@ -26,7 +26,6 @@ public:
 	      m_cartridge_to_handheld("/tmp/cartridge_to_handheld.fifo")
 	{
 	}
-	virtual ~communicator_pipe_c() = 0;
 };
 
 #endif /* COMMUNICATOR_PIPE_H */

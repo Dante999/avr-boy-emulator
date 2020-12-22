@@ -8,6 +8,7 @@
 *.cflags
 *.cxxflags
 .vscode
+CMakeLists.txt.user
 
 # QT Creator (used for QT projects)
 # keep the independent .pro file but delete user files
@@ -21,3 +22,4 @@
 *.exe 
 
 /build
+/build*

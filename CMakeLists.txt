@@ -18,8 +18,10 @@ include(cmake/standard-project-settings.cmake)
 
 # ------------------------------------------------------------------------------
 # setup conan
-set(CONAN_EXTRA_REQUIRES ${CONAN_EXTRA_REQUIRES} gtest/1.10.0
+set(CONAN_EXTRA_REQUIRES ${CONAN_EXTRA_REQUIRES} 
+                         gtest/1.10.0
                          imgui-sfml/2.1@bincrafters/stable
+                         spdlog/1.8.2
 )
 
 if(NOT CONAN_INITIALIZED)
@@ -29,6 +31,7 @@ if(NOT CONAN_INITIALIZED)
 endif()
 
 add_subdirectory(extern/avr-boy-core)
-add_subdirectory(app)
 add_subdirectory(src)
+add_subdirectory(app)
 add_subdirectory(test)
+add_subdirectory(demo)

@@ -10,14 +10,22 @@
 #include <stdlib.h>
 #include <unistd.h> // fifo write() read()
 
+#include "spdlog/spdlog.h"
+
 int fifo_pipe_c::open_pipe(mode_e rw_mode)
 {
 	umask(0);
 
 	if ((mkfifo(m_filepath.c_str(), 0666)) == -1) {
 
-		if (errno != EEXIST) {
-			perror("mkfifo()");
+		int error = errno;
+
+		if (error == EEXIST) {
+			spdlog::info("pipe {} does already exist", m_filepath);
+		}
+		else {
+			spdlog::error("failed to create fifo pipe {} : {}",
+			              m_filepath, strerror(error));
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -26,7 +34,8 @@ int fifo_pipe_c::open_pipe(mode_e rw_mode)
 
 	/* FIFO zum Lesen und Schreiben öffnen */
 	if ((m_fhandle = open(m_filepath.c_str(), mode)) == -1) {
-		perror("open()");
+		spdlog::error("failed to open fifo pipe {} : {}", m_filepath,
+		              strerror(errno));
 		exit(EXIT_FAILURE);
 	}
 
@@ -40,10 +49,16 @@ int fifo_pipe_c::close_pipe()
 
 void fifo_pipe_c::write_bytes(const uint8_t *data, size_t length)
 {
-	write(m_fhandle, data, length);
+	if (write(m_fhandle, data, length) < 0) {
+		spdlog::error("failed to write to pipe {} : {}", m_filepath,
+		              strerror(errno));
+	}
 }
 
 void fifo_pipe_c::read_bytes(uint8_t *data, size_t length)
 {
-	read(m_fhandle, data, length);
+	if (read(m_fhandle, data, length) < 0) {
+		spdlog::error("failed to read from pipe {} : {}", m_filepath,
+		              strerror(errno));
+	}
 }

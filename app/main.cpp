@@ -4,26 +4,27 @@
 #include <array>
 
 #include "avr-boy-core/graphx.hpp"
+#include "avr_boy_emulator.hpp"
+#include "spdlog/spdlog.h"
+// extern void      graphx_init();
+// extern graphx_c &graphx_loop();
 
-extern void      graphx_init();
-extern graphx_c &graphx_loop();
+// void draw_graphx_buffer(sf::Image &img, graphx_c &fx)
+// {
+// 	for (uint8_t x = 0; x < graphx_c::width; ++x) {
 
-void draw_graphx_buffer(sf::Image &img, graphx_c &fx)
-{
-	for (uint8_t x = 0; x < graphx_c::width; ++x) {
-
-		for (uint8_t y = 0; y < graphx_c::height; ++y) {
-			img.setPixel(x, y,
-			             fx.get_pixel(x, y) ? sf::Color::Black
-			                                : sf::Color::White);
-		}
-	}
-}
+// 		for (uint8_t y = 0; y < graphx_c::height; ++y) {
+// 			img.setPixel(x, y,
+// 			             fx.get_pixel(x, y) ? sf::Color::Black
+// 			                                : sf::Color::White);
+// 		}
+// 	}
+// }
 
 int main()
 {
-
-	graphx_init();
+	spdlog::set_level(spdlog::level::debug);
+	// graphx_init();
 
 	// create the window
 	sf::RenderWindow window(sf::VideoMode(128, 64), "My window");
@@ -38,6 +39,8 @@ int main()
 	texture.loadFromImage(
 	    img, sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(128, 64)));
 	sprite.setTexture(texture);
+
+	auto emulator = avr_boy_emulator_c(&img);
 
 	// run the program as long as the window is open
 	while (window.isOpen()) {
@@ -54,7 +57,9 @@ int main()
 		window.clear(sf::Color::Green);
 
 		// draw everything here...
-		draw_graphx_buffer(img, graphx_loop());
+		// draw_graphx_buffer(img, graphx_loop());
+		emulator.do_work();
+
 		texture.update(img);
 		window.draw(sprite);
 
