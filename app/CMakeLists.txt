@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.10)
 add_executable(
         ${PROJECT_NAME}
         main.cpp #
-        graphx_loop.cpp #
         avr_boy_emulator.cpp
 )
 

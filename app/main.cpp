@@ -6,30 +6,16 @@
 #include "avr-boy-core/graphx.hpp"
 #include "avr_boy_emulator.hpp"
 #include "spdlog/spdlog.h"
-// extern void      graphx_init();
-// extern graphx_c &graphx_loop();
-
-// void draw_graphx_buffer(sf::Image &img, graphx_c &fx)
-// {
-// 	for (uint8_t x = 0; x < graphx_c::width; ++x) {
-
-// 		for (uint8_t y = 0; y < graphx_c::height; ++y) {
-// 			img.setPixel(x, y,
-// 			             fx.get_pixel(x, y) ? sf::Color::Black
-// 			                                : sf::Color::White);
-// 		}
-// 	}
-// }
 
 int main()
 {
-	spdlog::set_level(spdlog::level::debug);
+	spdlog::set_level(spdlog::level::info);
 	// graphx_init();
 
 	// create the window
 	sf::RenderWindow window(sf::VideoMode(128, 64), "My window");
 	window.setSize(sf::Vector2u(1280, 640));
-	window.setFramerateLimit(60);
+	// window.setFramerateLimit(60);
 
 	sf::Image   img;
 	sf::Sprite  sprite;
