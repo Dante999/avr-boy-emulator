@@ -5,6 +5,7 @@ project(avr_boy_emulator_demo)
 add_executable(
         ${PROJECT_NAME}
         main.cpp #
+	ball.cpp #
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ../include)

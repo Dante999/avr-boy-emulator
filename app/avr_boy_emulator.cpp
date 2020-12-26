@@ -1,6 +1,8 @@
 #include "avr_boy_emulator.hpp"
 #include "spdlog/spdlog.h"
 #include <thread>
+
+#include <SFML/Window/Keyboard.hpp>
 /**
  * must be static, otherwise oldschool function pointers did did not
  * work
@@ -24,6 +26,45 @@ static void cb_draw_screen_buffer(graphx_c &gfx)
 	}
 }
 
+static void cb_get_buttons(avrboy_payload::buttons_s &buttons)
+{
+
+	buttons.states = 0;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+		buttons.states |= (1 << avrboy_payload::button_e::BUTTON_UP);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+		buttons.states |= (1 << avrboy_payload::button_e::BUTTON_DOWN);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+		buttons.states |= (1 << avrboy_payload::button_e::BUTTON_LEFT);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+		buttons.states |= (1 << avrboy_payload::button_e::BUTTON_RIGHT);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J)) {
+		buttons.states |= (1 << avrboy_payload::button_e::BUTTON_B);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) {
+		buttons.states |= (1 << avrboy_payload::button_e::BUTTON_A);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+		buttons.states |= (1 << avrboy_payload::button_e::BUTTON_START);
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Backspace)) {
+		buttons.states |=
+		    (1 << avrboy_payload::button_e::BUTTON_SELECT);
+	}
+}
+
 } // namespace
 
 avr_boy_emulator_c::avr_boy_emulator_c(sf::Image *img)
@@ -40,6 +81,8 @@ avr_boy_emulator_c::avr_boy_emulator_c(sf::Image *img)
 
 	m_handheld->set_draw_buffer_callback(
 	    [](graphx_c &gfx) { cb_draw_screen_buffer(gfx); });
+	m_handheld->set_get_buttons_callback(
+	    [](avrboy_payload::buttons_s &btn) { cb_get_buttons(btn); });
 }
 
 void avr_boy_emulator_c::do_work()

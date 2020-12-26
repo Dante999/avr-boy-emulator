@@ -5,6 +5,8 @@
 #include <chrono>
 #include <thread>
 // --
+#include "ball.hpp"
+
 #include "avr-boy-core/cartridge.hpp"
 #include "avr-boy-core/graphx.hpp"
 
@@ -72,7 +74,7 @@ static void demo_pixel(cartridge_c &cartridge)
 		sleep_for_ms(draw_delay_ms);
 	}
 
-	for (uint8_t y = y_min; y <= x_max; ++y) {
+	for (uint8_t y = y_min; y <= y_max; ++y) {
 
 		for (uint8_t x = x_min; x <= x_max; ++x) {
 
@@ -81,6 +83,84 @@ static void demo_pixel(cartridge_c &cartridge)
 				    x, y, avrboy_payload::color_e::COLOR_BLACK);
 			}
 		}
+
+		cartridge.draw_buffer();
+		sleep_for_ms(draw_delay_ms);
+	}
+}
+
+static void demo_bouncing_pixel(cartridge_c &cartridge)
+{
+	cartridge.clear_buffer();
+	cartridge.draw_buffer();
+
+	constexpr uint16_t max_bounces   = 1000;
+	constexpr uint8_t  draw_delay_ms = 20;
+
+	uint8_t x_min = 0;
+	uint8_t x_max = graphx_c::max_x;
+	uint8_t y_min = 0;
+	uint8_t y_max = graphx_c::max_y;
+
+	ball_c ball(ball_c::direction_e::DIR_UPRIGHT, x_min, x_max, y_min,
+	            y_max);
+
+	ball.set_coordinates(2, 10);
+
+	for (uint16_t i = 0; i < max_bounces; ++i) {
+
+		cartridge.set_pixel(ball.get_x(), ball.get_y(),
+		                    avrboy_payload::color_e::COLOR_WHITE);
+		ball.bounce();
+		cartridge.set_pixel(ball.get_x(), ball.get_y(),
+		                    avrboy_payload::color_e::COLOR_BLACK);
+
+		cartridge.draw_buffer();
+		sleep_for_ms(draw_delay_ms);
+	}
+}
+
+static void demo_buttons(cartridge_c &cartridge)
+{
+	using namespace avrboy_payload;
+
+	cartridge.clear_buffer();
+	cartridge.draw_buffer();
+
+	constexpr uint16_t max_bounces   = 500;
+	constexpr uint8_t  draw_delay_ms = 20;
+
+	draw_sequencial(cartridge, 5, 5, "Press buttons", draw_delay_ms);
+
+	cartridge.set_text(5, 20, "up    ");
+	cartridge.set_text(5, 30, "down  ");
+	cartridge.set_text(5, 40, "left  ");
+	cartridge.set_text(5, 50, "right ");
+
+	cartridge.set_text(75, 20, "A      ");
+	cartridge.set_text(75, 30, "B      ");
+	cartridge.set_text(75, 40, "start  ");
+	cartridge.set_text(75, 50, "select ");
+	cartridge.draw_buffer();
+
+	auto stc = [](buttons_s buttons, button_e id) -> char {
+		return (buttons.states & (1 << id)) ? '1' : '0';
+	};
+
+	avrboy_payload::buttons_s btns;
+
+	for (uint16_t i = 0; i < max_bounces; ++i) {
+		cartridge.get_buttons(btns);
+
+		cartridge.set_char(40, 20, stc(btns, button_e::BUTTON_UP));
+		cartridge.set_char(40, 30, stc(btns, button_e::BUTTON_DOWN));
+		cartridge.set_char(40, 40, stc(btns, button_e::BUTTON_LEFT));
+		cartridge.set_char(40, 50, stc(btns, button_e::BUTTON_RIGHT));
+
+		cartridge.set_char(120, 20, stc(btns, button_e::BUTTON_A));
+		cartridge.set_char(120, 30, stc(btns, button_e::BUTTON_B));
+		cartridge.set_char(120, 40, stc(btns, button_e::BUTTON_START));
+		cartridge.set_char(120, 50, stc(btns, button_e::BUTTON_SELECT));
 
 		cartridge.draw_buffer();
 		sleep_for_ms(draw_delay_ms);
@@ -107,10 +187,16 @@ int main()
 	cartridge.set_text(0, 0, "AVR BOY DEMO");
 
 	while (1) {
+		demo_buttons(cartridge);
+		sleep_for_ms(1000);
+
 		demo_text(cartridge);
 		sleep_for_ms(1000);
 
 		demo_pixel(cartridge);
+		sleep_for_ms(1000);
+
+		demo_bouncing_pixel(cartridge);
 		sleep_for_ms(1000);
 	}
 }
