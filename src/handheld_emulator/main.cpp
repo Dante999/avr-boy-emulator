@@ -4,7 +4,7 @@
 #include <array>
 
 #include "avr-boy-core/graphx.hpp"
-#include "avr_boy_emulator.hpp"
+#include "handheld_emulator.hpp"
 #include "spdlog/spdlog.h"
 
 int main()
@@ -26,7 +26,7 @@ int main()
 	    img, sf::IntRect(sf::Vector2i(0, 0), sf::Vector2i(128, 64)));
 	sprite.setTexture(texture);
 
-	auto emulator = avr_boy_emulator_c(&img);
+	auto emulator = handheld_emulator_c(img);
 
 	// run the program as long as the window is open
 	while (window.isOpen()) {

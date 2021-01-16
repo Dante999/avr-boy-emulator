@@ -10,14 +10,9 @@
 #include "avr-boy-core/cartridge.hpp"
 #include "avr-boy-core/graphx.hpp"
 
-#include "avr-boy-emulator/communicator.hpp"
-#include "avr-boy-emulator/communicator_pipe.hpp"
+#include "avr-boy-emulator/transceiver_pipe.hpp"
 
 #include "spdlog/spdlog.h"
-
-namespace {
-static std::unique_ptr<communicator_c> m_communicator;
-}
 
 inline static void sleep_for_ms(int ms)
 {
@@ -172,13 +167,21 @@ int main()
 	spdlog::set_level(spdlog::level::info);
 	spdlog::info("Hello World!");
 
-	m_communicator = std::make_unique<communicator_pipe_c>(
-	    communicator_c::role_e::CARTRIDGE);
-	m_communicator->init();
+	struct cartridge_emulator_s : public cartridge_c {
+		transceiver_pipe_cartridge m_transceiver;
 
-	cartridge_c cartridge(
-	    [](uint8_t byte) { m_communicator->send_byte(byte); },
-	    []() -> uint8_t { return m_communicator->receive_byte(); });
+		void send_byte(uint8_t byte) override
+		{
+			m_transceiver.send_byte(byte);
+		}
+
+		uint8_t receive_byte() override
+		{
+			return m_transceiver.receive_byte();
+		}
+	};
+
+	cartridge_emulator_s cartridge;
 
 	cartridge.sync_with_handheld();
 

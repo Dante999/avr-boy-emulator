@@ -32,6 +32,5 @@ endif()
 
 add_subdirectory(extern/avr-boy-core)
 add_subdirectory(src)
-add_subdirectory(app)
 add_subdirectory(test)
-add_subdirectory(demo)
+
