@@ -94,7 +94,7 @@ static void demo_bouncing_pixel(cartridge_c &cartridge)
 	cartridge.clear_buffer();
 	cartridge.draw_buffer();
 
-	constexpr uint16_t max_bounces   = 1000;
+	constexpr uint16_t max_bounces   = 300;
 	constexpr uint8_t  draw_delay_ms = 20;
 
 	uint8_t x_min = 0;
